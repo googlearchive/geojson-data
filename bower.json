@@ -1,0 +1,7 @@
+{
+  "name": "geojson-data#gh-pages",
+  "private": true,
+  "dependencies": {
+    "geojson-data": "polymerlabs/geojson-data#master"
+  }
+}

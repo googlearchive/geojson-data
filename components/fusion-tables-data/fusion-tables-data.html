@@ -1,0 +1,66 @@
+<!--
+@license
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../core-ajax/core-ajax.html">
+
+<!--
+A data source element for the Google Fusion Tables API.
+
+##### Example
+
+    <fusion-tables-data
+      query="SELECT * FROM 1KxVV0wQXhxhMScSDuqr-0Ebf0YEt4m4xzVplKd4"
+      key="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"></fusion-tables-data>
+
+@element fusion-tables-data
+@blurb A data source element for the Google Fusion Tables API.
+@homepage https://polymerlabs.github.io/fusion-tables-data/
+-->
+<polymer-element name="fusion-tables-data" attributes="query key response">
+  <template>
+    <style></style>
+
+    <core-ajax
+      auto
+      url="https://www.googleapis.com/fusiontables/v1/query"
+      params='{"sql":"{{query}}", "key":"{{key}}"}'
+      handleAs="json"
+      response="{{response}}"></core-ajax>
+  </template>
+
+  <script>
+    Polymer({
+      /**
+       * The Fusion Tables query
+       *
+       * @attribute query
+       * @type string
+       */
+      query: null,
+
+      /**
+       * The API key to access the Google Fusion Tables API
+       *
+       * @attribute key
+       * @type string
+       */
+      key: null,
+
+
+      /**
+       * The response object
+       *
+       * @attribute response
+       * @type Object
+       */
+      response: null
+    });
+  </script>
+</polymer-element>

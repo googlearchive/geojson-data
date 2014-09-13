@@ -1,0 +1,191 @@
+<!--
+@license
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../fusion-tables-data/fusion-tables-data.html">
+
+<!--
+A data source element for GeoJSON. Can be bound to a Google Map to draw regions.
+
+##### Example
+
+    <geojson-data country="CAN" region="AB" scale="110m"
+      key="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"></geojson-data>
+
+@element geojson-data
+@blurb A data source element for GeoJSON. Can be bound to a Google Map to draw regions.
+@homepage https://polymerlabs.github.io/geojson-data/
+-->
+<polymer-element name="geojson-data" attributes="country region scale geojson map key">
+  <template>
+    <fusion-tables-data query="{{query}}" key="{{key}}" response="{{response}}"></fusion-tables-data>
+  </template>
+
+  <script>
+    Polymer({
+      /**
+       * The 3-letter country code.
+       *
+       * @attribute country
+       * @type string
+       */
+      country: null,
+
+      /**
+       * The 2-letter state/province code.
+       *
+       * @attribute [region]
+       * @type string
+       * @default null
+       */
+      region: null,
+
+      /**
+       * The scale of the GeoJSON data. Can be '10m' (highest resolution), '50m', or '110m' (smallest response).
+       *
+       * @attribute [scale]
+       * @type string
+       * @default '50m'
+       */
+      scale: '50m',
+
+      /**
+       * The response GeoJSON object.
+       *
+       * @attribute geojson
+       * @type Object
+       */
+      geojson: null,
+
+      /**
+       * The Google map object.
+       *
+       * @attribute [map]
+       * @type google.maps.Map
+       * @default null
+       */
+      map: null,
+
+      /**
+       * The API key to access the Google Fusion Tables API
+       *
+       * @attribute key
+       * @type string
+       */
+      key: null,
+
+      query: null,
+
+      response: null,
+
+      ready: function() {
+        this.buildQuery_();
+      },
+
+      attributeChanged: function(attrName, oldVal, newVal) {
+        this.buildQuery_();
+      },
+
+      buildQuery_: function() {
+        this.query = "SELECT 'kml_4326' FROM " + this.getTableID_() +
+          ' WHERE ' + this.getQueryConditions_();
+      },
+
+      getTableID_: function() {
+        if (this.region) {
+          return {
+            '10m': '1vRgso0NNIocWUXffTPM1ukqAS0H3L4a60aWq6g',
+            '50m': '1otYS67LhomiRbsICah9A2SjutOKG2-R2eG6mwQ',
+            '110m': '182vcMOLiVOiLTmPUCzPD7ibPnG3aolVcaw-mqA'
+          }[this.scale]
+        } else {
+          return {
+            '10m': '16CTzhDWVwwqa0e5xe4dRxQ9yoyE1hVt_3ekDFQ',
+            '50m': '1uKyspg-HkChMIntZ0N376lMpRzduIjr85UYPpQ',
+            '110m': '1foc3xO9DyfSIF6ofvN0kp2bxSfSeKog5FbdWdQ'
+          }[this.scale];
+        }
+      },
+
+      getQueryConditions_: function() {
+        if (this.region) {
+          return "'iso' = '" + this.country + "' AND 'postal' = '" + this.region + "'";
+        } else {
+          return "'iso_a3' = '" + this.country + "'";
+        }
+      },
+
+      responseChanged: function() {
+        if (this.response.rows && this.response.rows[0]) {
+          this.geojson = this.formatData_(this.response.rows[0][0]);
+        } else {
+          this.geojson = null;
+        }
+
+        this.updateMap_();
+      },
+
+      // GeoJson must be a Feature or FeatureCollection to be added to a gMap.
+      formatData_: function(data) {
+        if (data.geometry) {
+          return {
+            type: 'Feature',
+            geometry: this.formatGeometry_(data.geometry)
+          };
+        } else if (data.geometries) {
+          var features = data.geometries.map(function(geometry) {
+            return {
+              type: 'Feature',
+              geometry: this.formatGeometry_(geometry)
+            };
+          }.bind(this));
+          return {
+            type: 'FeatureCollection',
+            features: features
+          };
+        } else {
+          return null;
+        }
+      },
+
+      formatGeometry_: function(geometry) {
+        if (geometry.type == 'Polygon') {
+          geometry.coordinates[0] = this.makeClosedPath_(geometry.coordinates[0]);
+        }
+        return geometry;
+      },
+
+      makeClosedPath_: function(path) {
+        if (!this.coordsEqual_(path[0], path[path.length-1])) {
+          path.push([path[0][0], path[0][1]]);
+        }
+        return path;
+      },
+
+      coordsEqual_: function(a, b) {
+        return (a[0] == b[0]) && (a[1] == b[1]);
+      },
+
+      updateMap_: function() {
+        if (this.map) {
+          this.clearMap_();
+          this.features_ = this.map.data.addGeoJson(this.geojson);
+        }
+      },
+
+      clearMap_: function() {
+        if (this.map && this.features_ && this.features_.length) {
+          this.features_.forEach(function(feature) {
+            this.map.data.remove(feature);
+          }.bind(this));
+        }
+      }
+    });
+  </script>
+</polymer-element>

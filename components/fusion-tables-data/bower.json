@@ -1,0 +1,19 @@
+{
+  "name": "fusion-tables-data",
+  "version": "0.1.0",
+  "authors": [
+    "Keanu Lee <keanulee@google.com>"
+  ],
+  "description": "A data source element for the Google Fusion Tables API.",
+  "keywords": [
+    "polymer",
+    "web-components",
+    "fusion-tables"
+  ],
+  "main": "fusion-tables-data.html",
+  "homepage": "https://polymerlabs.github.io/fusion-tables-data/",
+  "dependencies": {
+    "polymer": "Polymer/polymer#>=0.4.0 <1.0.0",
+    "core-ajax": "Polymer/core-ajax#>=0.4.0 <1.0.0"
+  }
+}
