@@ -1,0 +1,25 @@
+{
+  "name": "geojson-data",
+  "version": "0.1.0",
+  "authors": [
+    "Keanu Lee <keanulee@google.com>"
+  ],
+  "description": "A data source element for GeoJSON. Can be bound to a Google Map to draw regions.",
+  "keywords": [
+    "polymer",
+    "web-components",
+    "fusion-tables",
+    "map",
+    "maps",
+    "google-map",
+    "google-maps",
+    "geojson"
+  ],
+  "main": "geojson-data.html",
+  "homepage": "https://polymerlabs.github.io/geojson-data/",
+  "dependencies": {
+    "polymer": "Polymer/polymer#>=0.4.0 <1.0.0",
+    "google-map": "GoogleWebComponents/google-map#>=0.3.1 <1.0.0",
+    "fusion-tables-data": "PolymerLabs/fusion-tables-data#master"
+  }
+}
