@@ -21,22 +21,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
   </head>
   <body fullbleed unresolved>
-    <geojson-data country="MEX" key="AIzaSyDNDav2_KlVI-Pj47RRjRfg-DuULQUtR5E"></geojson-data>
-    <geojson-data country="CAN" scale="110m" key="AIzaSyDNDav2_KlVI-Pj47RRjRfg-DuULQUtR5E"></geojson-data>
-    <geojson-data country="USA" region="CA" key="AIzaSyDNDav2_KlVI-Pj47RRjRfg-DuULQUtR5E"></geojson-data>
-    <geojson-data country="USA" region="TX" key="AIzaSyDNDav2_KlVI-Pj47RRjRfg-DuULQUtR5E"></geojson-data>
+    <template is="auto-binding">
+      <geojson-data country="MEX" key="AIzaSyDNDav2_KlVI-Pj47RRjRfg-DuULQUtR5E" map="{{map}}"></geojson-data>
+      <geojson-data country="CAN" scale="110m" key="AIzaSyDNDav2_KlVI-Pj47RRjRfg-DuULQUtR5E" map="{{map}}"></geojson-data>
+      <geojson-data country="USA" region="CA" key="AIzaSyDNDav2_KlVI-Pj47RRjRfg-DuULQUtR5E" map="{{map}}"></geojson-data>
+      <geojson-data country="USA" region="TX" key="AIzaSyDNDav2_KlVI-Pj47RRjRfg-DuULQUtR5E" map="{{map}}"></geojson-data>
 
-    <google-map fit zoom="4"></google-map>
-
-    <script>
-      var gmap = document.querySelector('google-map');
-      gmap.addEventListener('api-load', function(e) {
-        var map = this.map;
-        var geoJsonElements = document.querySelectorAll('geojson-data');
-        Array.prototype.forEach.call(geoJsonElements, function(n) {
-          n.map = map;
-        });
-      });
-    </script>
+      <google-map fit zoom="4" map="{{map}}"></google-map>
+    </template>
   </body>
 </html>
